@@ -1,10 +1,10 @@
 package ct.producer.bean;
 
-import com.atguigu.ct.common.bean.DataIn;
-import com.atguigu.ct.common.bean.DataOut;
-import com.atguigu.ct.common.bean.Producer;
-import com.atguigu.ct.common.util.DateUtil;
-import com.atguigu.ct.common.util.NumberUtil;
+import ct.common.bean.DataIn;
+import ct.common.bean.DataOut;
+import ct.common.bean.Producer;
+import ct.common.util.DateUtil;
+import ct.common.util.NumberUtil;
 
 import java.io.IOException;
 import java.util.Date;

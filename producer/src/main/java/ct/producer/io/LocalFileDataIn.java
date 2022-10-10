@@ -1,7 +1,7 @@
 package ct.producer.io;
 
-import com.atguigu.ct.common.bean.Data;
-import com.atguigu.ct.common.bean.DataIn;
+import ct.common.bean.Data;
+import ct.common.bean.DataIn;
 
 import java.io.*;
 import java.util.ArrayList;

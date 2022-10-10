@@ -1,9 +1,9 @@
 package ct.producer;
 
-import com.atguigu.ct.common.bean.Producer;
-import com.atguigu.ct.producer.bean.LocalFileProducer;
-import com.atguigu.ct.producer.io.LocalFileDataIn;
-import com.atguigu.ct.producer.io.LocalFileDataOut;
+import ct.common.bean.Producer;
+import ct.producer.bean.LocalFileProducer;
+import ct.producer.io.LocalFileDataIn;
+import ct.producer.io.LocalFileDataOut;
 
 /**
  * 启动对象

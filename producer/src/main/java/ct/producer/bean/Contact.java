@@ -1,6 +1,6 @@
 package ct.producer.bean;
 
-import com.atguigu.ct.common.bean.Data;
+import ct.common.bean.Data;
 
 /**
  * 联系人

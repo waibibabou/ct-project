@@ -1,6 +1,6 @@
 package ct.producer.io;
 
-import com.atguigu.ct.common.bean.DataOut;
+import ct.common.bean.DataOut;
 
 import java.io.*;
 
