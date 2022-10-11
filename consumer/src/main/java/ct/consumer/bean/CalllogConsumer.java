@@ -33,10 +33,10 @@ public class CalllogConsumer implements Consumer {
             // 关注主题
             consumer.subscribe(Arrays.asList(Names.TOPIC.getValue()));
 
-//            // Hbase数据访问对象
-//            HBaseDao dao = new HBaseDao();
-//            // 初始化
-//            dao.init();
+            // Hbase数据访问对象
+            HBaseDao dao = new HBaseDao();
+            // 初始化
+            dao.init();
 
             // 消费数据
             while ( true ) {
@@ -45,8 +45,8 @@ public class CalllogConsumer implements Consumer {
                     System.out.println(consumerRecord.value());
                     // 插入数据
 //                    dao.insertData(consumerRecord.value());
-                    //Calllog log = new Calllog(consumerRecord.value());
-                    //dao.insertData(log);
+                    Calllog log = new Calllog(consumerRecord.value());
+                    dao.insertData(log);
                 }
             }
         } catch ( Exception e ) {
