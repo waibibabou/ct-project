@@ -49,7 +49,9 @@ public abstract class BaseDao {
      * @param families
      */
     protected void createTableXX( String name, String... families ) throws Exception {
-        createTableXX(name, null, null, families);
+//        createTableXX(name, null, null, families);
+        //之前创建的表分区数只有1，这里手动设置一下分区数看看
+        createTableXX(name, null, 6, families);
     }
     protected void createTableXX( String name, String coprocessorClass, Integer regionCount, String... families ) throws Exception {
         Admin admin = getAdmin();
@@ -251,7 +253,7 @@ public abstract class BaseDao {
     }
 
     /**
-     * 增加数据
+     * 增加一条数据
      * @param name
      * @param put
      */

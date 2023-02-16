@@ -9,11 +9,13 @@
         <module name="common" />
         <module name="web" />
         <module name="producer" />
-        <module name="consumer-coprocessor" />
-        <module name="cache-ext" />
         <module name="analysis" />
         <module name="consumer" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="cache-ext" target="1.8" />
+      <module name="consumer-coprocessor" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
 </project>

@@ -27,5 +27,6 @@ public class NumberUtil {
 
         System.out.println(format(10, 10));
 
+
     }
 }

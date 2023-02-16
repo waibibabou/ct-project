@@ -148,6 +148,7 @@ public class MySQLTextOutputFormat extends OutputFormat<Text, Text> {
     public void checkOutputSpecs(JobContext context) throws IOException, InterruptedException {
 
     }
+
     private FileOutputCommitter committer = null;
     public static Path getOutputPath(JobContext job) {
         String name = job.getConfiguration().get(FileOutputFormat.OUTDIR);

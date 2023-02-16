@@ -13,9 +13,7 @@
         <module>consumer</module>
         <module>producer</module>
         <module>web</module>
-        <module>consumer-coprocessor</module>
         <module>analysis</module>
-        <module>cache-ext</module>
     </modules>
 
     <properties>
