@@ -176,9 +176,6 @@ public abstract class BaseDao {
             String splitkey = i + "|";
             bsList.add(Bytes.toBytes(splitkey));
         }
-
-        //Collections.sort(bsList, new Bytes.ByteArrayComparator());
-
         bsList.toArray(bs);
 
         return bs;

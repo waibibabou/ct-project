@@ -10,7 +10,6 @@ public class ConfigConstant {
 
     static {
 
-        // 国际化
         ResourceBundle ct = ResourceBundle.getBundle("ct");
         Enumeration<String> enums = ct.getKeys();
         while ( enums.hasMoreElements() ) {

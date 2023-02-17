@@ -21,7 +21,6 @@ public class HBaseDao extends BaseDao {
         start();
 
         createNamepsaceNX(Names.NAMESPACE.getValue());
-//        createTableXX(Names.TABLE.getValue(), "ct.consumer.coprocessor.InsertCalleeCoprocessor", ValueConstant.REGION_COUNT, Names.CF_CALLER.getValue(), Names.CF_CALLEE.getValue());
         createTableXX(Names.TABLE.getValue(),  Names.CF_CALLER.getValue(), Names.CF_CALLEE.getValue());
 
         end();
