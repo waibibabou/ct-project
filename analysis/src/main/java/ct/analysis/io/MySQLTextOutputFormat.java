@@ -49,7 +49,7 @@ public class MySQLTextOutputFormat extends OutputFormat<Text, Text> {
 
             try {
 
-                String queryUserSql = "select code, system from dictionary";
+                String queryUserSql = "select `code`,`system` from dictionary";
                 pstat = connection.prepareStatement(queryUserSql);
                 rs = pstat.executeQuery();
                 while ( rs.next() ) {
@@ -99,33 +99,39 @@ public class MySQLTextOutputFormat extends OutputFormat<Text, Text> {
                 int biao=1;
                 if(codeMap.get(guZhang)!=null&&systemToBiaoMap.containsKey(codeMap.get(guZhang)))
                     biao=systemToBiaoMap.get(codeMap.get(guZhang));
-                String queryBiao="select * from "+ biao +" where code="+guZhangAndCheXiang;
+                String queryBiao="select * from `"+ biao +"` where `code`='"+guZhangAndCheXiang+"'";
                 ResultSet rs=null;
                 try {
                     pstat=connection.prepareStatement(queryBiao);
                     rs=pstat.executeQuery();
 
-                    String sql="";
-                    if(rs.next()){//有该条数据
+                    StringBuilder sql=new StringBuilder();
+                    //有该条数据
+                    if(rs.next()){
                         //省略column 1的判断因为肯定有数据
+                        System.out.println(rs.getString(1)+" "+rs.getString(2));
                         if (rs.getString(4)==null){
-                            sql="update "+biao+" set 2="+temp+" where code="+guZhangAndCheXiang;
+                            sql.append("update `"+biao+"` set `2`='"+temp+"' where code='"+guZhangAndCheXiang+"'");
                         }
                         else if (rs.getString(5)==null){
-                            sql="update "+biao+" set 3="+temp+" where code="+guZhangAndCheXiang;
+                            sql.append("update `"+biao+"` set `3`='"+temp+"' where code='"+guZhangAndCheXiang+"'");
                         }
                         else if (rs.getString(6)==null){
-                            sql="update "+biao+" set 4="+temp+" where code="+guZhangAndCheXiang;
+                            sql.append("update `"+biao+"` set `4`='"+temp+"' where code='"+guZhangAndCheXiang+"'");
                         }
                         else if (rs.getString(7)==null){
-                            sql="update "+biao+" set 5="+temp+" where code="+guZhangAndCheXiang;
+                            sql.append("update `"+biao+"` set `5`='"+temp+"' where code='"+guZhangAndCheXiang+"'");
+                        }
+                        //如果5个位置都有值了则直接跳过插入以及更新即可
+                        else{
+                            continue;
                         }
 
                     }
                     else{//还没有该条数据
-                        sql="insert into "+biao+" (code,1) values ("+guZhangAndCheXiang+","+temp+")";
+                        sql.append("insert into `"+biao+"` (`code`,`1`) values ('"+guZhangAndCheXiang+"','"+temp+"')");
                     }
-                    pstat=connection.prepareStatement(sql);
+                    pstat=connection.prepareStatement(sql.toString());
                     pstat.executeUpdate();
 
                 } catch (SQLException e) {
