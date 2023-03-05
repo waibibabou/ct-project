@@ -8,7 +8,7 @@ import ct.consumer.bean.CalllogConsumer;
 
     使用Kafka消费者获取Flume采集的数据
 
-    将数据存储到Hbase中去
+    并将数据存储到Hbase中去
  */
 public class Bootstrap {
     public static void main(String[] args) throws  Exception {

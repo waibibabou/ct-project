@@ -13,7 +13,7 @@ public class Reducer1 extends Reducer<Text, IntWritable, Text, IntWritable>{
     private IntWritable outV=new IntWritable();
     @Override
     protected void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
-
+        //整合效用值
         int sum=0;
         for(IntWritable intWritable:values){
             sum+=intWritable.get();

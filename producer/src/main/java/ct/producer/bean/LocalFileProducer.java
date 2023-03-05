@@ -43,7 +43,7 @@ public class LocalFileProducer implements Producer {
 
                 String s= sb1 +":"+total+":"+ sb2;
                 System.out.println(s);
-                // 将通话记录刷写到数据文件中
+                // 将故障记录刷写到数据文件中
                 out.write(s);
 
                 Thread.sleep(500);

@@ -36,7 +36,7 @@ public class AnalysisTextTool implements Tool {
         Scan scan = new Scan();
         scan.addFamily(Bytes.toBytes(Names.CF_INFO.getValue()));
 
-        // mapper
+        // mapper1
         TableMapReduceUtil.initTableMapperJob(
                 Names.TABLE.getValue(),
                 scan,
@@ -46,15 +46,15 @@ public class AnalysisTextTool implements Tool {
                 job1
         );
 
-        // reducer
+        // reducer1
         job1.setReducerClass(Reducer1.class);
         job1.setOutputKeyClass(Text.class);
         job1.setOutputValueClass(IntWritable.class);
-
+        //将未排序的结果临时存储到hdfs中
         FileOutputFormat.setOutputPath((JobConf) job1.getConfiguration(),new Path("hdfs:/output"));
-
         boolean flg = job1.waitForCompletion(true);
 
+        //第一个MR程序运行完成后执行排序MR程序
         if ( flg ) {
             Configuration confs=new Configuration();
             Job job2=Job.getInstance(confs,"utility count2");

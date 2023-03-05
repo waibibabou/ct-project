@@ -109,7 +109,6 @@ public class MySQLTextOutputFormat extends OutputFormat<Text, Text> {
                     //有该条数据
                     if(rs.next()){
                         //省略column 1的判断因为肯定有数据
-                        System.out.println(rs.getString(1)+" "+rs.getString(2));
                         if (rs.getString(4)==null){
                             sql.append("update `"+biao+"` set `2`='"+temp+"' where code='"+guZhangAndCheXiang+"'");
                         }

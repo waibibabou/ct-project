@@ -12,7 +12,7 @@ import java.util.Arrays;
 import java.util.Properties;
 
 /**
- * 通话日志消费者对象
+ * 故障日志消费者对象
  */
 public class CalllogConsumer implements Consumer {
     /**
