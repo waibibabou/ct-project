@@ -7,9 +7,7 @@ import ct.common.bean.Val;
  */
 public enum Names implements Val {
     NAMESPACE("ct")
-    ,TABLE("ct:calllog")
-    ,CF_CALLER("caller")
-    ,CF_CALLEE("callee")
+    ,TABLE("ct:tky")
     ,CF_INFO("info")
     ,TOPIC("ct");
 

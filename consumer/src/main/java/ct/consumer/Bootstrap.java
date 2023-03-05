@@ -11,7 +11,6 @@ import ct.consumer.bean.CalllogConsumer;
     将数据存储到Hbase中去
  */
 public class Bootstrap {
-    public final static String ABC = "ABC";
     public static void main(String[] args) throws  Exception {
 
         // 创建消费者

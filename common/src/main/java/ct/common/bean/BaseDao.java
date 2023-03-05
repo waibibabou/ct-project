@@ -4,8 +4,6 @@ import ct.common.api.Column;
 import ct.common.api.Rowkey;
 import ct.common.api.TableRef;
 import ct.common.constant.Names;
-import ct.common.constant.ValueConstant;
-import ct.common.util.DateUtil;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.*;
 import org.apache.hadoop.hbase.client.*;
@@ -46,28 +44,20 @@ public abstract class BaseDao {
     /**
      * 创建表，如果表已经存在，那么删除后在创建新的
      * @param name
-     * @param families
+     * @param regionCount
      */
-    protected void createTableXX( String name, String... families ) throws Exception {
-//        createTableXX(name, null, null, families);
-        //之前创建的表分区数只有1，这里手动设置一下分区数看看
-        createTableXX(name, null, 6, families);
-    }
-    protected void createTableXX( String name, String coprocessorClass, Integer regionCount, String... families ) throws Exception {
+    protected void createTableXX( String name, Integer regionCount) throws Exception {
         Admin admin = getAdmin();
-
         TableName tableName = TableName.valueOf(name);
-
         if ( admin.tableExists(tableName) ) {
             // 表存在，删除表
             deleteTable(name);
         }
-
         // 创建表
-        createTable(name, coprocessorClass, regionCount, families);
+        createTable(name, regionCount, null);
     }
 
-    private void createTable( String name, String coprocessorClass, Integer regionCount, String... families ) throws Exception {
+    private void createTable( String name, Integer regionCount, String... families ) throws Exception {
         Admin admin = getAdmin();
         TableName tableName = TableName.valueOf(name);
 
@@ -85,10 +75,6 @@ public abstract class BaseDao {
             tableDescriptor.addFamily(columnDescriptor);
         }
 
-        if ( coprocessorClass != null && !"".equals(coprocessorClass) ) {
-            tableDescriptor.addCoprocessor(coprocessorClass);
-        }
-
         // 增加预分区
         if ( regionCount == null || regionCount <= 1 ) {
             admin.createTable(tableDescriptor);
@@ -100,62 +86,15 @@ public abstract class BaseDao {
     }
 
     /**
-     * 获取查询时startrow, stoprow集合
+     * 计算分区号(0, 1, 2, 3, 4, 5)
+     * @param firstcode
      * @return
      */
-    protected List<String[]> getStartStorRowkeys( String tel, String start, String end ) {
-        List<String[]> rowkeyss = new ArrayList<String[]>();
+    protected int genRegionNum( String firstcode) {
 
-        String startTime = start.substring(0, 6);
-        String endTime = end.substring(0, 6);
-
-        Calendar startCal = Calendar.getInstance();
-        startCal.setTime(DateUtil.parse(startTime, "yyyyMM"));
-
-        Calendar endCal = Calendar.getInstance();
-        endCal.setTime(DateUtil.parse(endTime, "yyyyMM"));
-
-        while (startCal.getTimeInMillis() <= endCal.getTimeInMillis()) {
-
-            // 当前时间
-            String nowTime = DateUtil.format(startCal.getTime(), "yyyyMM");
-
-            int regionNum = genRegionNum(tel, nowTime);
-
-            String startRow = regionNum + "_" + tel + "_" + nowTime;
-            String stopRow = startRow + "|";
-
-            String[] rowkeys = {startRow, stopRow};
-            rowkeyss.add(rowkeys);
-
-            // 月份+1
-            startCal.add(Calendar.MONTH, 1);
-        }
-
-        return rowkeyss;
-    }
-
-    /**
-     * 计算分区号(0, 1, 2)
-     * @param tel
-     * @param date
-     * @return
-     */
-    protected int genRegionNum( String tel, String date ) {
-
-        // 13301234567
-        String usercode = tel.substring(tel.length()-4);
-        // 20181010120000
-        String yearMonth = date.substring(0, 6);
-
-        int userCodeHash = usercode.hashCode();
-        int yearMonthHash = yearMonth.hashCode();
-
-        // crc校验采用异或算法， hash
-        int crc = Math.abs(userCodeHash ^ yearMonthHash);
-
+        int CodeHash = firstcode.hashCode();
         // 取模
-        int regionNum = crc % ValueConstant.REGION_COUNT;
+        int regionNum = CodeHash % 6;
 
         return regionNum;
 
@@ -181,73 +120,6 @@ public abstract class BaseDao {
         return bs;
     }
 
-    /**
-     * 增加对象：自动封装数据，将对象数据直接保存到hbase中去
-     * @param obj
-     * @throws Exception
-     */
-
-    protected void putData(Object obj) throws Exception {
-
-        // 反射
-        Class clazz = obj.getClass();
-        TableRef tableRef = (TableRef)clazz.getAnnotation(TableRef.class);
-        String tableName = tableRef.value();
-
-        Field[] fs = clazz.getDeclaredFields();
-        String stringRowkey = "";
-        for (Field f : fs) {
-            Rowkey rowkey = f.getAnnotation(Rowkey.class);
-            if ( rowkey != null ) {
-                f.setAccessible(true);
-                stringRowkey = (String)f.get(obj);
-                break;
-            }
-        }
-
-        Connection conn = getConnection();
-        Table table = conn.getTable(TableName.valueOf(tableName));
-        Put put = new Put(Bytes.toBytes(stringRowkey));
-
-        for (Field f : fs) {
-            Column column = f.getAnnotation(Column.class);
-            if (column != null) {
-                String family = column.family();
-                String colName = column.column();
-                if ( colName == null || "".equals(colName) ) {
-                    colName = f.getName();
-                }
-                f.setAccessible(true);
-                String value = (String)f.get(obj);
-
-                put.addColumn(Bytes.toBytes(family), Bytes.toBytes(colName), Bytes.toBytes(value));
-            }
-        }
-
-        // 增加数据
-        table.put(put);
-
-        // 关闭表
-        table.close();
-    }
-
-    /**
-     * 增加多条数据
-     * @param name
-     * @param puts
-     */
-    protected void putData( String name, List<Put> puts ) throws Exception {
-
-        // 获取表对象
-        Connection conn = getConnection();
-        Table table = conn.getTable(TableName.valueOf(name));
-
-        // 增加数据
-        table.put(puts);
-
-        // 关闭表
-        table.close();
-    }
 
     /**
      * 增加一条数据
@@ -289,11 +161,8 @@ public abstract class BaseDao {
         try {
             admin.getNamespaceDescriptor(namespace);
         } catch ( NamespaceNotFoundException e ) {
-            //e.printStackTrace();
-
             NamespaceDescriptor namespaceDescriptor =
                 NamespaceDescriptor.create(namespace).build();
-
             admin.createNamespace(namespaceDescriptor);
         }
 
@@ -308,7 +177,6 @@ public abstract class BaseDao {
             admin = getConnection().getAdmin();
             adminHolder.set(admin);
         }
-
         return admin;
     }
 
@@ -322,7 +190,6 @@ public abstract class BaseDao {
             conn = ConnectionFactory.createConnection(conf);
             connHolder.set(conn);
         }
-
         return conn;
     }
 

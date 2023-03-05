@@ -9,7 +9,6 @@
         <module name="producer" />
         <module name="common" />
         <module name="analysis" />
-        <module name="web" />
         <module name="consumer" />
       </profile>
     </annotationProcessing>
@@ -17,6 +16,7 @@
       <module name="cache-ext" target="1.8" />
       <module name="consumer-coprocessor" target="1.8" />
       <module name="untitled" target="1.8" />
+      <module name="web" target="1.8" />
       <module name="web1" target="1.8" />
     </bytecodeTargetLevel>
   </component>
